@@ -2,14 +2,14 @@
 
 if($did = intval($_SERVER['QUERY_STRING'])){
 	
-getBaib('http://baibako.tv/download.php?id='.$did, 1);
+getBaib('https://baibako.tv/download.php?id='.$did, 1);
 
 }else{
 
 header('Content-type: text/xml');
 
 
-preg_match("#<tbody id=\"highlighted\">(.*?)</tbody>#si", getBaib('http://baibako.tv/browse.php'), $rss);
+preg_match("#<tbody id=\"highlighted\">(.*?)</tbody>#si", getBaib('https://baibako.tv/browse.php'), $rss);
 
 $rss = mb_convert_encoding($rss[1], 'UTF-8', 'Windows-1251');
 
@@ -22,7 +22,7 @@ echo "<?xml version='1.0' encoding='UTF-8'?>
 <rss version='2.0'>
 <channel> 
 <title>BaibaKo.TV</title>
-<link>http://baibako.tv</link>
+<link>https://baibako.tv</link>
 <language>ru</language>
 ";
 
@@ -70,7 +70,7 @@ $c = "curl '".$url."' \
   -H 'Upgrade-Insecure-Requests: 1' \
   -H 'User-Agent: Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.129 Safari/537.36' \
   -H 'Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9' \
-  -H 'Referer: http://baibako.tv/browse.php' \
+  -H 'Referer: https://baibako.tv/browse.php' \
   -H 'Accept-Language: ru-RU,ru;q=0.9,en-US;q=0.8,en;q=0.7' \
   -H 'Cookie: uid=12345; pass=67891011121314151766464426789321' \
   --compressed \
