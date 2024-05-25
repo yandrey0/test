@@ -1,0 +1,45 @@
+#!/bin/php
+<?php
+
+require 'bencoding.inc.php';
+
+if (!isset($argv[1]) || strlen($argv[1]) != 40)	exit("Invalid info_hash\n");  
+
+$info_hash = urlencode(hex2bin($argv[1]));
+
+$peer_id = '-TR4100-'.substr(md5($info_hash),0,12);
+
+$tracker = !isset($argv[2]) ? 'http://retracker.local/announce' : $argv[2];
+
+$cmd = <<<EOD
+curl -H 'User-Agent: Transmission/4.1.0' \
+ -H 'X-Forwarded-For: 10.20.30.40' \
+ -G -d 'info_hash=$info_hash' \
+ -d 'peer_id=$peer_id' \
+ -d 'port=54320' -d 'ip=10.20.30.40' \
+ -d 'uploaded=0' -d 'downloaded=0' -d 'left=0' -d 'numwant=100' -d 'event=started' -d 'compact=1' \
+ -s --connect-timeout 7 --compressed \
+ '$tracker'
+EOD;
+
+if($r = shell_exec($cmd)){
+
+if($d = bdecode($r)){
+
+foreach(array('failure reason','warning message') as $m) if(isset($d[$m])) echo($d[$m]."\n");
+
+if(isset($d['peers'])){
+foreach(str_split($d['peers'], 6) as $p){
+
+$peer = unpack('Nip/nport', $p);
+
+echo long2ip($peer["ip"]).':'.$peer["port"]."\n";
+
+}
+}
+
+} else echo $r;
+
+}
+
+echo "\n";
